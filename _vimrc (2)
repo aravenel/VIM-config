@@ -106,8 +106,6 @@ map <leader>n :NERDTreeToggle<CR>
 
 " Run command-t file search
 map <leader>f :CommandT<CR>
-" Exclude media directories from command-t
-set wildignore+=myth/video,myth/music,*.mp3,*.mkv,*.avi
 " Ack searching
 nmap <leader>a <Esc>:Ack!
 
@@ -203,7 +201,8 @@ set noautowriteall          " NEVER.
 set noautoread              " Don't automatically re-read changed files.
 set modeline                " Allow vim options to be embedded in files;
 set modelines=5             " they must be within the first or last 5 lines.
-set ffs=unix,dos,mac        " Try recognizing dos, unix, and mac line endings.
+"set ffs=unix,dos,mac        " Try recognizing dos, unix, and mac line endings.
+set ffs=unix
 
 """" Messages, Info, Status
 set ls=2                    " allways show status line
@@ -227,7 +226,7 @@ set smarttab                " Handle tabs more intelligently
 set hlsearch                " Highlight searches by default.
 set incsearch               " Incrementally search while typing a /regex
 
-"""" Display
+"""" Display and OS specific options
 if has("gui_running")
     colorscheme solarized
 	if has("gui_win32")
@@ -279,7 +278,6 @@ autocmd VimEnter * imap <expr> <Tab> pumvisible() ? "<C-N>" : "<Tab>"
 autocmd VimEnter * imap <expr> <S-Tab> pumvisible() ? "<C-P>" : "<S-Tab>"
 snor <c-j> <esc>i<right><c-r>=TriggerSnippet()<cr>
 let g:acp_completeoptPreview=1
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 
 " ===========================================================
 " FileType specific changes
@@ -287,7 +285,6 @@ autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 " Mako/HTML
 autocmd BufNewFile,BufRead *.mako,*.mak setlocal ft=html
 autocmd FileType html,xhtml,xml,css setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 
 " Python
 "au BufRead *.py compiler nose
@@ -327,3 +324,25 @@ if has("gui_running")
 		endif
 	endif
 endif
+
+map <leader>c :call CleanClose(1)<CR>
+map <leader>x :call CleanClose(0)<CR>
+"Function to close buffer without closing window
+function! CleanClose(tosave)
+if (a:tosave == 1)
+    w!
+endif
+let todelbufNr = bufnr("%")
+let newbufNr = bufnr("#")
+if ((newbufNr != -1) && (newbufNr != todelbufNr) && buflisted(newbufNr))
+    exe "b".newbufNr
+else
+    bnext
+endif
+
+if (bufnr("%") == todelbufNr)
+    new
+endif
+exe "bd".todelbufNr
+endfunction
+
