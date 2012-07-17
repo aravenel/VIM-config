@@ -328,6 +328,7 @@ if has("gui_running")
 	endif
 endif
 
-" Add ignore files for git
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc  " MacOSX/Linux
+"Ctrl-P Settings
+"set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc  " MacOSX/Linux
+set wildignore+=tmp\*,*.swp,*.zip,*.exe   " Windows
 let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
